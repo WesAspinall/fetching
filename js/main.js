@@ -2,6 +2,7 @@
   const ROOT_URL = 'https://jsonplaceholder.typicode.com';
   const USERS = '/users';
   const PHOTOS = '/photos';
+  const COMMENTS = '/comments';
 
   const fetchEl = document.querySelector("#fetch");
   const jqAjaxEl = $("#jq");
@@ -18,11 +19,7 @@
       html = users.map((user) => {
         return `
           <ul>
-            <li>${user.name}</li>
-            <li>${user.username}</li>
-            <li>${user.email}</li>
-            <li>${user.website}</li>
-            <li>${user.phone}</li>
+            <li>${user.name}, ${user.username}, ${user.email}, ${user.website}, ${user.phone}</li>
           </ul>
       `
       }).join('');
@@ -38,19 +35,31 @@
       method: 'GET'
     })
     .then((res) => {
-      sliced = res.slice(0,6);
+      sliced = res.slice(0,2);
       return sliced
     })
     .then((photos) => {
       photos.forEach((photo) => {
-        $(".jq-loading").remove();
         jqAjaxEl.append(`<img src='${photo.url}'>`);
-      })
+      });
+
+      $(".jq-loading").remove(); //moved outside of forEach
+    });
+  }
+
+  // difference between .then() and .done() found here:
+  // https://stackoverflow.com/questions/5436327/jquery-deferreds-and-promises-then-vs-done
+  function jqGet() {
+    $.get(ROOT_URL+COMMENTS).done((res) => {
+      sliced = res.slice(0,4);
+      sliced.forEach((comment) => $('#comments').append(`<p>${comment.body}</p>`));
+      $(".comments-loading").remove();
     });
   }
 
   fetchData();
   jqAjax();
+  jqGet();
 }
 
    
