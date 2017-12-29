@@ -10,7 +10,8 @@
     fetch(ROOT_URL+USERS)
     .then((res) => res.json())
     .then((data) => {
-      users.push(...data);
+      sliced = data.slice(0, 2);
+      users.push(...sliced);
       html = users.map((user) => {
         return `
           <ul>
